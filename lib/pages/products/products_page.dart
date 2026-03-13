@@ -38,11 +38,45 @@ class ProductsPage extends StatelessWidget {
                     'Preço: R\$ ${product.price.toStringAsFixed(2)}\nQuantidade: ${product.quantity}',
                   ),
                   isThreeLine: true,
-                  trailing: IconButton(
-                    icon: const Icon(Icons.delete, color: Colors.red),
-                    onPressed: () {
-                      _productService.deleteProduct(product.id!);
-                    },
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        icon: const Icon(Icons.edit, color: Colors.blue),
+                        onPressed: () {
+                          // edição vamos implementar depois
+                        },
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.delete, color: Colors.red),
+                        onPressed: () async {
+                          final confirm = await showDialog(
+                            context: context,
+                            builder: (context) => AlertDialog(
+                              title: const Text('Excluir produto'),
+                              content: const Text(
+                                'Tem certeza que deseja excluir?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () =>
+                                      Navigator.pop(context, false),
+                                  child: const Text('Cancelar'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.pop(context, true),
+                                  child: const Text('Excluir'),
+                                ),
+                              ],
+                            ),
+                          );
+
+                          if (confirm == true) {
+                            _productService.deleteProduct(product.id!);
+                          }
+                        },
+                      ),
+                    ],
                   ),
                 ),
               );
