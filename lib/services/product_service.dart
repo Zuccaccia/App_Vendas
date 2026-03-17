@@ -21,7 +21,10 @@ class ProductService {
 
   // UPDATE
   Future<void> updateProduct(Product product) async {
-    await _productsCollection.doc(product.id).update(product.toMap());
+    await FirebaseFirestore.instance
+        .collection('products')
+        .doc(product.id)
+        .update(product.toMap());
   }
 
   // DELETE

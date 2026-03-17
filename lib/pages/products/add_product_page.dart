@@ -3,7 +3,9 @@ import '../../models/product_model.dart';
 import '../../services/product_service.dart';
 
 class AddProductPage extends StatefulWidget {
-  const AddProductPage({super.key});
+  final Product? product;
+
+  const AddProductPage({super.key, this.product});
 
   @override
   State<AddProductPage> createState() => _AddProductPageState();
@@ -17,28 +19,43 @@ class _AddProductPageState extends State<AddProductPage> {
 
   final ProductService _productService = ProductService();
 
+  bool _isLoading = false;
+
   Future<void> _saveProduct() async {
     if (_formKey.currentState!.validate()) {
-      final product = Product(
-        name: _nameController.text,
-        price: double.parse(_priceController.text),
-        quantity: int.parse(_quantityController.text),
-      );
+      setState(() => _isLoading = true);
 
-      await _productService.addProduct(product);
+      try {
+        final product = Product(
+          id: widget.product?.id,
+          name: _nameController.text,
+          price:
+              double.tryParse(_priceController.text.replaceAll(',', '.')) ??
+              0.0,
+          quantity: int.tryParse(_quantityController.text) ?? 0,
+        );
 
-      if (!mounted) return;
+        if (product.id != null) {
+          await _productService.updateProduct(product);
+        } else {
+          await _productService.addProduct(product);
+        }
 
-      Navigator.pop(context, true);
+        if (!mounted) return;
+
+        Navigator.pop(context, true);
+      } catch (e) {
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Erro: $e'), backgroundColor: Colors.red),
+        );
+      } finally {
+        if (mounted) {
+          setState(() => _isLoading = false);
+        }
+      }
     }
-  }
-
-  @override
-  void dispose() {
-    _nameController.dispose();
-    _priceController.dispose();
-    _quantityController.dispose();
-    super.dispose();
   }
 
   @override
@@ -70,9 +87,44 @@ class _AddProductPageState extends State<AddProductPage> {
                     value!.isEmpty ? 'Informe a quantidade' : null,
               ),
               const SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveProduct,
-                child: const Text('Salvar'),
+              InkWell(
+                borderRadius: BorderRadius.circular(25),
+                onTap: () {
+                  if (!_isLoading) {
+                    _saveProduct();
+                  }
+                },
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: _isLoading ? null : _saveProduct,
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blue,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                    ),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 300),
+                      child: _isLoading
+                          ? const SizedBox(
+                              key: ValueKey('loading'),
+                              height: 24,
+                              width: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : Text(
+                              widget.product != null ? 'Atualizar' : 'Salvar',
+                              key: const ValueKey('text'),
+                              style: const TextStyle(fontSize: 16),
+                            ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),
