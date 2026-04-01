@@ -5,6 +5,7 @@ import 'firebase_options.dart';
 import 'services/auth_service.dart';
 import 'pages/auth/login_page.dart';
 import 'pages/home/home_page.dart';
+import 'core/app_theme.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +21,7 @@ class AppVendas extends StatelessWidget {
     return MaterialApp(
       title: 'App Vendas',
       debugShowCheckedModeBanner: false,
+      theme: AppTheme.theme,
       home: const AuthWrapper(),
     );
   }
