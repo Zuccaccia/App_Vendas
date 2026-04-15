@@ -26,7 +26,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
   Future<void> _load() async {
     setState(() => _loading = true);
-    final data = await _saleService.getSalesByPeriod(_selectedPeriod);
+    final data = await _saleService.chartStream(_selectedPeriod).first;
     setState(() {
       _data = data;
       _loading = false;
@@ -174,8 +174,9 @@ class _DashboardPageState extends State<DashboardPage> {
                                       getTitlesWidget: (v, _) {
                                         final sorted = _data.keys.toList()
                                           ..sort();
-                                        if (v.toInt() >= sorted.length)
+                                        if (v.toInt() >= sorted.length) {
                                           return const SizedBox();
+                                        }
                                         return Text(
                                           DateFormat(
                                             'dd/MM',
@@ -197,7 +198,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                                 barTouchData: BarTouchData(
                                   touchTooltipData: BarTouchTooltipData(
-                                    getTooltipItem: (group, _, rod, __) =>
+                                    getTooltipItem: (group, _, rod, _) =>
                                         BarTooltipItem(
                                           _currency.format(rod.toY),
                                           const TextStyle(

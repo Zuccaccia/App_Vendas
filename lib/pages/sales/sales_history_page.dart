@@ -9,14 +9,14 @@ class SalesHistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final _saleService = SaleService();
-    final _currency = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
-    final _dateFormat = DateFormat('dd/MM/yyyy  HH:mm');
+    final saleService = SaleService();
+    final currency = NumberFormat.currency(locale: 'pt_BR', symbol: 'R\$');
+    final dateFormat = DateFormat('dd/MM/yyyy  HH:mm');
 
     return Scaffold(
       appBar: AppBar(title: const Text('Histórico de Vendas')),
       body: StreamBuilder<List<SaleModel>>(
-        stream: _saleService.salesStream(),
+        stream: saleService.salesStream(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(
@@ -70,7 +70,7 @@ class SalesHistoryPage extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          _currency.format(totalGeral),
+                          currency.format(totalGeral),
                           style: const TextStyle(
                             color: AppTheme.accent,
                             fontSize: 22,
@@ -85,10 +85,10 @@ class SalesHistoryPage extends StatelessWidget {
                         vertical: 8,
                       ),
                       decoration: BoxDecoration(
-                        color: AppTheme.accent.withOpacity(0.1),
+                        color: AppTheme.accent.withValues(alpha: 0.1),
                         borderRadius: BorderRadius.circular(20),
                         border: Border.all(
-                          color: AppTheme.accent.withOpacity(0.3),
+                          color: AppTheme.accent.withValues(alpha: 0.3),
                         ),
                       ),
                       child: Text(
@@ -121,7 +121,7 @@ class SalesHistoryPage extends StatelessWidget {
                           Container(
                             padding: const EdgeInsets.all(10),
                             decoration: BoxDecoration(
-                              color: AppTheme.accent.withOpacity(0.1),
+                              color: AppTheme.accent.withValues(alpha: 0.1),
                               borderRadius: BorderRadius.circular(10),
                             ),
                             child: const Icon(
@@ -144,7 +144,7 @@ class SalesHistoryPage extends StatelessWidget {
                                 ),
                                 const SizedBox(height: 4),
                                 Text(
-                                  '${s.quantity}x ${_currency.format(s.unitPrice)}  •  ${_dateFormat.format(s.date)}',
+                                  '${s.quantity}x ${currency.format(s.unitPrice)}  •  ${dateFormat.format(s.date)}',
                                   style: const TextStyle(
                                     color: AppTheme.textSec,
                                     fontSize: 12,
@@ -154,7 +154,7 @@ class SalesHistoryPage extends StatelessWidget {
                             ),
                           ),
                           Text(
-                            _currency.format(s.total),
+                            currency.format(s.total),
                             style: const TextStyle(
                               color: AppTheme.accent,
                               fontWeight: FontWeight.w800,
