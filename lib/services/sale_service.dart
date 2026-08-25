@@ -34,7 +34,7 @@ class SaleService {
       ).toMap(),
     );
 
-    batch.update(_db.collection('produtos').doc(productId), {
+    batch.update(_db.collection('products').doc(productId), {
       'quantity': FieldValue.increment(-quantity),
     });
 

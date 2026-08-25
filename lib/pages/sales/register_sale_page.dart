@@ -31,7 +31,7 @@ class _RegisterSalePageState extends State<RegisterSalePage> {
   void initState() {
     super.initState();
     // Stream em tempo real dos produtos
-    _sub = _db.collection('produtos').snapshots().listen((snap) {
+    _sub = _db.collection('products').snapshots().listen((snap) {
       if (!mounted) return;
       setState(() {
         _products = snap.docs.map((d) => {'id': d.id, ...d.data()}).toList();

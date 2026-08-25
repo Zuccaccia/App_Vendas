@@ -106,6 +106,7 @@ class SalesHistoryPage extends StatelessWidget {
                 child: ListView.separated(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   itemCount: sales.length,
+                  // ignore: unnecessary_underscores
                   separatorBuilder: (_, __) => const SizedBox(height: 10),
                   itemBuilder: (_, i) {
                     final s = sales[i];
